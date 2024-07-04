@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GADD</title>
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-image {
+            max-width: 50%; /* Limita el tamaño de la imagen de entrada */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .similar-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .similar-image {
+            width: 22%; /* Tamaño aproximado para mostrar 4 imágenes por fila */
+            margin: 10px;
+            text-align: center;
+        }
+
+        .similar-image img {
+            max-width: 100%; /* Ajusta el tamaño de las imágenes similares */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .similar-image img:hover {
+            transform: scale(1.1);
+        }
+
+        .new-search-btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-search-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .load-more-btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 10px;
+            background-color: #28a745; /* Color verde */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            background-color: #218838; /* Color verde oscuro al hacer hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GADD</h1>
+        
+        <!-- Sección de Imagen de Entrada -->
+        <div class="input-section">
+            <h2>Imagen de Entrada</h2>
+            <img class="input-image" src="{{ input_image }}" alt="Imagen de Entrada">
+        </div>
+
+        <!-- Lista de Imágenes Similares -->
+        <h2>Imágenes Similares</h2>
+        <div class="similar-images" id="similar-images">
+            {% for image_path, similarity in similar_images %}
+            <div class="similar-image">
+                <img src="{{ image_path }}" alt="Imagen Similar">
+                <div class="caption">
+                    <p><strong>Similitud:</strong> {{ similarity }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Botón para cargar más imágenes -->
+        <button class="load-more-btn" id="load-more-btn">Mostrar Más</button>
+
+        <!-- Botón para nueva consulta -->
+        <a href="/" class="new-search-btn">Volver</a>
+
+    </div>
+
+    <!-- jQuery para manejar la lógica de carga -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var imagesToShow = 100; // Total de imágenes a mostrar
+            var imagesShown = 8; // Número inicial de imágenes mostradas
+
+            $('.similar-image').slice(imagesShown).hide(); // Oculta todas las imágenes después de las primeras 8
+
+            // Manejar el clic del botón "Mostrar Más"
+            $('#load-more-btn').click(function(){
+                imagesShown += 8; // Incrementa el contador de imágenes mostradas
+                $('.similar-image:hidden').slice(0, 8).slideDown(); // Muestra las siguientes 8 imágenes ocultas
+                if (imagesShown >= imagesToShow) { // Si ya se han mostrado todas las imágenes
+                    $('#load-more-btn').fadeOut('slow'); // Oculta el botón "Mostrar Más"
+                }
+            });
+        });
+    </script>
+</body>
+</html>

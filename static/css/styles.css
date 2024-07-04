@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    position: relative;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    z-index: 1;
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 36px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.custom-file-upload:hover {
+    background-color: #0056b3;
+}
+
+#file-chosen {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#uploadBtn {
+    background-color: #28a745;
+}
+
+#uploadBtn:hover {
+    background-color: #218838;
+}
+
+#error {
+    color: red;
+    margin-top: 20px;
+}
+
+.raindrop {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: url('../images/raindrop.png') no-repeat center center;
+    background-size: contain;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% {
+        top: -50px;
+        opacity: 1;
+    }
+    100% {
+        top: 100vh;
+        opacity: 0;
+    }
+}
+
+

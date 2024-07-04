@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GADD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>GADD</h1>
+        <h3 id="imageUploadText">Ingrese una imagen para realizar una búsqueda</h3>
+        <form id="uploadForm" method="post" enctype="multipart/form-data" action="{{ url_for('upload_image') }}">
+            <label for="file-upload" class="custom-file-upload" id="fileLabel">
+                Seleccionar imagen
+            </label>
+            <input id="file-upload" type="file" name="file" accept="image/*" required style="display: none;">
+            <div id="file-chosen"></div>
+            <div>
+                <button type="submit" id="consultBtn" disabled>Consultar</button>
+                <button type="button" id="uploadBtn">Cargar Datos</button>
+            </div>
+        </form>
+        <div id="progressContainer" style="display: none;">
+            <div id="progressBar" style="width: 0%; height: 30px; background-color: #4CAF50;"></div>
+            <div id="progressText"></div>
+        </div>
+        <div id="error">{{ error }}</div>
+    </div>
+
+    <script>
+        const fileUpload = document.getElementById('file-upload');
+        const fileChosen = document.getElementById('file-chosen');
+        const fileLabel = document.getElementById('fileLabel');
+        const consultBtn = document.getElementById('consultBtn');
+        const imageUploadText = document.getElementById('imageUploadText');
+
+        fileUpload.addEventListener('change', function(){
+            fileChosen.textContent = this.files[0].name;
+            fileLabel.textContent = 'Cambiar imagen';
+            consultBtn.disabled = false;
+            imageUploadText.style.display = 'none';
+        });
+
+        document.getElementById('uploadBtn').addEventListener('click', function() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.style.display = 'block';
+
+            const eventSource = new EventSource('/stream');
+
+            eventSource.addEventListener('progress', function(event) {
+                const data = JSON.parse(event.data);
+                const progress = data.progress;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = 'Cargando datos: ' + progress + '%';
+
+                if (progress === 100) {
+                    eventSource.close();
+                    alert('Datos cargados correctamente.');
+                }
+            });
+
+            fetch('{{ url_for('load_data') }}', { method: 'POST' })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al cargar los datos.');
+                });
+        });
+
+        // Script para generar las gotas de lluvia después de que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+
+            for (let i = 0; i < 50; i++) {
+                const raindrop = document.createElement('div');
+                raindrop.className = 'raindrop';
+                raindrop.style.left = `${Math.random() * 100}vw`;
+                raindrop.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                raindrop.style.animationDelay = `${Math.random() * 5}s`;
+                body.appendChild(raindrop);
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/animation.js') }}"></script>
+</body>
+</html>

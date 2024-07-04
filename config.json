@@ -1,0 +1,10 @@
+{
+    "dbname": "postgres",
+    "user": "postgres",
+    "password": "admin",
+    "host": "localhost",
+    "port": "5432",
+    "path": "C:\\Users\\vendi\\OneDrive\\Escritorio\\Proyecto GADD\\static\\dataset",
+    "static_dataset": "static\\dataset",
+    "input_path": "static\\uploads"
+}
