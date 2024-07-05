@@ -39,7 +39,7 @@ def extract_features(image_path):
     caracteristicas_vector = caracteristicas.squeeze().numpy()
     return caracteristicas_vector
 
-image_dir = config['path']
+image_dir = config['static_dataset']
 for image_name in os.listdir(image_dir):
     image_path = os.path.join(image_dir, image_name)
     features = extract_features(image_path)

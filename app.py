@@ -80,11 +80,9 @@ def upload_image():
                 break
 
         input_image_path = os.path.join(config['input_path'], filename)
-        print(input_image_path)
 
         image_base_path = config['static_dataset']
         similar_images_full_path = [(os.path.join(image_base_path, img[0]), img[1]) for img in unique_images]
-        print(similar_images_full_path)
 
         return render_template('results.html', input_image=input_image_path, similar_images=similar_images_full_path)
     return redirect(url_for('index'))
