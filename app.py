@@ -12,11 +12,9 @@ from PIL import Image
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
-# Cargar configuración de conexión desde config.json
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-# Configuración de la conexión a PostgreSQL
 conn = psycopg2.connect(
     dbname=config['dbname'],
     user=config['user'],
@@ -26,11 +24,9 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
-# Cargar el modelo ResNet-18 preentrenado
 modelo_resnet = models.resnet18(pretrained=True)
 modelo_resnet.eval()
 
-# Transformaciones de imagen para el modelo ResNet
 transformacion = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -54,14 +50,11 @@ def upload_image():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
 
-        # Extraer características de la imagen subida
         uploaded_features = extract_features(file_path)
 
-        # Verificar si las características extraídas contienen NaN
         if uploaded_features is None or np.isnan(uploaded_features).any():
             return render_template('index.html', error="La imagen subida contiene características no válidas (NaN).")
 
-        # Consulta SQL para obtener las imágenes más similares utilizando la función obtener_similares
         cursor.execute(
                     """
                     SELECT url, cosine_distance(caracteristicas, %s::FLOAT8[]) AS distance
@@ -83,15 +76,12 @@ def upload_image():
                 unique_images.append(img)
                 seen_urls.add(url)
 
-            # Limitar a 10 imágenes únicas
             if len(unique_images) >= 100:
                 break
 
-        # Construir la ruta completa para la imagen de input
         input_image_path = os.path.join(config['input_path'], filename)
         print(input_image_path)
 
-        # Construir la ruta completa de cada imagen relativa a la base del servidor web
         image_base_path = config['static_dataset']
         similar_images_full_path = [(os.path.join(image_base_path, img[0]), img[1]) for img in unique_images]
         print(similar_images_full_path)
@@ -106,7 +96,7 @@ def load_data():
 
 def extract_features(image_path):
     image = Image.open(image_path)
-    image_tensor = transformacion(image).unsqueeze(0)  # Agregar dimensión de lote (batch)
+    image_tensor = transformacion(image).unsqueeze(0)
 
     with torch.no_grad():
         caracteristicas = modelo_resnet(image_tensor)

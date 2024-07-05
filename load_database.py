@@ -7,11 +7,9 @@ import torchvision.models as models
 from PIL import Image
 import numpy as np
 
-# Cargar configuración de conexión desde config.json
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-# Configuración de la conexión a PostgreSQL
 conn = psycopg2.connect(
     dbname=config['dbname'],
     user=config['user'],
@@ -21,11 +19,9 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
-# Cargar el modelo ResNet-18 preentrenado
 modelo_resnet = models.resnet18(pretrained=True)
 modelo_resnet.eval()
 
-# Transformaciones de imagen para el modelo ResNet
 transformacion = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -35,7 +31,7 @@ transformacion = transforms.Compose([
 
 def extract_features(image_path):
     image = Image.open(image_path)
-    image_tensor = transformacion(image).unsqueeze(0)  # Agregar dimensión de lote (batch)
+    image_tensor = transformacion(image).unsqueeze(0)
 
     with torch.no_grad():
         caracteristicas = modelo_resnet(image_tensor)
@@ -43,17 +39,17 @@ def extract_features(image_path):
     caracteristicas_vector = caracteristicas.squeeze().numpy()
     return caracteristicas_vector
 
-# Directorio de imágenes
 image_dir = config['path']
 for image_name in os.listdir(image_dir):
     image_path = os.path.join(image_dir, image_name)
     features = extract_features(image_path)
 
-    # Insertar características en la base de datos
     cursor.execute(
         "INSERT INTO imagenes (url, caracteristicas) VALUES (%s, %s)",
         (image_name, features.tolist())
     )
+
+    print("imagen insertada correctamente" + image_name)
 
 conn.commit()
 cursor.close()

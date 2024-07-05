@@ -4,10 +4,16 @@ CREATE TABLE imagenes (
     caracteristicas FLOAT8[]
 );
 
-CREATE OR REPLACE FUNCTION euclidean_distance(a FLOAT8[], b FLOAT8[])
-RETURNS FLOAT8 AS $$
+CREATE OR REPLACE FUNCTION cosine_distance(a double precision[], b double precision[])
+ RETURNS double precision
+ LANGUAGE plpgsql
+ IMMUTABLE
+AS $function$
 DECLARE
-    sum FLOAT8 = 0;
+    dot_product FLOAT8 = 0;
+    norm_a FLOAT8 = 0;
+    norm_b FLOAT8 = 0;
+    cosine_similarity FLOAT8;
     i INT;
 BEGIN
     IF array_length(a, 1) <> array_length(b, 1) THEN
@@ -15,21 +21,16 @@ BEGIN
     END IF;
 
     FOR i IN 1..array_length(a, 1) LOOP
-        sum := sum + (a[i] - b[i]) * (a[i] - b[i]);
+        dot_product := dot_product + (a[i] * b[i]);
+        norm_a := norm_a + (a[i] * a[i]);
+        norm_b := norm_b + (b[i] * b[i]);
     END LOOP;
 
-    RETURN sqrt(sum);
-END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+    IF norm_a = 0 OR norm_b = 0 THEN
+        RETURN 1;
+    END IF;
 
-CREATE OR REPLACE FUNCTION obtener_similares(input_features FLOAT8[])
-RETURNS TABLE(result_url TEXT, distancia FLOAT8) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT url, 
-           euclidean_distance(caracteristicas, input_features) AS distancia
-    FROM imagenes
-    ORDER BY distancia
-    LIMIT 10;
+    cosine_similarity := dot_product / (sqrt(norm_a) * sqrt(norm_b));
+    RETURN 1 - cosine_similarity;
 END;
-$$ LANGUAGE plpgsql;
+$function$
