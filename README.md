@@ -15,8 +15,7 @@ Esta aplicación te permite encontrar imágenes similares dentro de un conjunto 
         ```
 
 3. **Configurar la conexión a la base de datos:**
-    - Crea un archivo llamado `config.json` en el directorio de tu proyecto.
-    - Agrega la siguiente información al archivo, reemplazando los marcadores de posición con tus credenciales reales de la base de datos:
+    - Modifica el archivo `config.json` reemplazando los valores con los valores correspondientes a tu base de datos y ruta del proyecto:
 
         ```json
         {
@@ -29,29 +28,27 @@ Esta aplicación te permite encontrar imágenes similares dentro de un conjunto 
             "input_path": "ruta/para/almacenar/imágenes/cargadas"
         }
         ```
-        - Asegúrate de reemplazar los marcadores de posición con el nombre real de tu base de datos, usuario, contraseña, host y puerto.
+        - Las rutas utilizadas se encuentran escritas como rutas relativas. 
         - `static_dataset`: Esta es la ruta al directorio que contiene las imágenes del conjunto de datos inicial que se utilizan para la comparación.
         - `input_path`: Esta es la ruta donde se almacenarán las imágenes cargadas.
 
-4. **Crear el esquema de la base de datos (opcional):**
+4. **Crear el esquema de la base de datos:**
     - Ejecuta el script ubicado en `/scripts/database.sql` en tu base de datos configurada anteriormente.
 
 ### Ejecución de la aplicación
 
-1. **Activa el entorno virtual** (si cerraste la terminal).
-
-2. **Inicia el servidor de desarrollo:**
+1. **Inicia el servidor:**
     - Abre tu terminal y navega hasta el directorio del proyecto.
     - Ejecuta el siguiente comando:
         ```bash
         python app.py
         ```
-    - Esto iniciará el servidor de desarrollo Flask, generalmente accesible en `http://127.0.0.1:5000/`.
+    - Esto iniciará el servidor Flask, generalmente accesible en `http://localhost:5000/` o `http://127.0.0.1:5000/`.
 
 ### Uso de la aplicación
 
 1. **Carga el conjunto de datos:**
-    - Accede a `http://127.0.0.1:5000/` en tu navegador web.
+    - Accede a `http://localhost:5000/` o `http://127.0.0.1:5000/` en tu navegador web.
     - Haz clic en el botón "Cargar datos". Esto procesará las imágenes de tu directorio de conjunto de datos especificado (`static_dataset` en tu base de datos configurada dentro de `config.json`) y poblará la tabla de la base de datos.
     - La aplicación devolverá un `load_data status 200` cuando se haya finalizado la carga de datos.
 
@@ -59,7 +56,7 @@ Esta aplicación te permite encontrar imágenes similares dentro de un conjunto 
     - Haz clic en el botón "Seleccionar Imagen" y elige un archivo de imagen (jpg o jpeg).
     - Haz clic en el botón "Consultar".
     - Esto cargará la imagen, extraerá sus características y encontrará imágenes similares en la base de datos.
-    - La página de resultados mostrará tu imagen cargada y las imágenes más similares del conjunto de datos, junto con sus puntuaciones de similitud.
+    - La página de resultados mostrará tu imagen cargada y las imágenes similares del conjunto de datos, junto con sus valores de similitud.
 
 3. **Ver más imágenes similares (opcional):**
-    - La página de resultados puede tener un botón "Mostrar más". Al hacer clic en él, se mostrarán más imágenes similares del conjunto de datos.
+    - La página de resultados puede tener un botón "Mostrar más". Al hacer clic en él, se desplegarán más imágenes similares del conjunto de datos.
